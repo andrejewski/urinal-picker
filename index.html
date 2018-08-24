@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Urinal Picker</title>
+    <meta name="description" content="One of the worst software engineers ever">
+    <meta charset="utf-8"
+    ><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    <meta name="author" content="Chris Andrejewski">
+    <style>
+      * {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #444;
+      }
+
+      .home {
+        text-align: center;
+      }
+
+      .background {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: stretch;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .overlay-content {
+        background-color: rgba(0,0,0,0.7);
+        flex: 1;
+      }
+
+      .title {
+        font-size: 8vw;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.25);
+        color: #fff;
+        margin: 0px;
+      }
+
+      .score {
+        font-size: 6vw;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        color: #fff;
+        margin: 0px;
+        max-width: 90vw;
+        margin: 0px auto;
+      }
+
+      .urinal {
+        background-color: #fff;
+        display: flex;
+        border-top-left-radius: 5%;
+        border-top-right-radius: 5%;
+      }
+
+      .urinal-row {
+        display: flex;
+        flex: 1;
+        align-items: center;
+      }
+
+      .urinal-walls {
+        border-left: 0.25vw solid #a6c9e7;
+        border-right: 0.25vw solid #a6c9e7;
+        flex: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        align-self: stretch;
+        padding-bottom: 30%;
+      }
+
+      .urinal-hole {
+        background-color: #def;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 15%;
+        border-bottom-right-radius: 15%;
+        width: 80%;
+        height: 90%;
+        box-shadow: inset 0 5px 10px rgba(0,0,0,0.03);
+      }
+
+      .bathroom-scene {
+        position: relative;
+      }
+
+      .bathroom-wall {
+        position: absolute;
+        bottom: 0;
+        left: -9999px;
+        right: -9999px;
+        top: -9999px;
+        background-color: #a6c9e7;
+        z-index: -1;
+      }
+
+      .bathroom-floor {
+        background-color: #f0efea;
+        position: absolute;
+        bottom: -999px;
+        left: -9999px;
+        right: -9999px;
+        top: 100%;
+        z-index: -1;
+
+        text-align: center;
+        font-size: 5vw;
+        font-weight: bold;
+        color: rgba(0,0,0,0.15);
+        padding: 2vw 0 0 50vw;
+        text-shadow: 0 1px 2px #fff;
+      }
+
+      .slot,
+      .slot-occupied,
+      .occupant {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      .slot-occupied,
+      .occupant {
+        align-self: stretch;
+        flex: 1;
+      }
+
+      .slot-occupied {
+        position: relative;
+      }
+
+      .slot {
+        cursor: pointer;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      .occupant {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+
+      .occupant-head {
+        width: 5vw;
+        height: 5vw;
+        border-radius: 50%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
+
+      .occupant-neck {
+        width: 2vw;
+        height: 2vw;
+      }
+
+      .occupant-shirt {
+        width: 8vw;
+        height: 13vw;
+        border-top-left-radius: 3vw;
+        border-top-right-radius: 3vw;
+      }
+
+      .occupant-waist {
+        width: 8vw;
+        height: 2vw;
+      }
+
+      .occupant-legs {
+        width: 8vw;
+        height: 7vw;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .occupant-leg {
+        align-self: stretch;
+        width: 48%;
+      }
+
+      .occupant--tall .occupant-shirt {
+        height: 15vw;
+      }
+
+      .occupant--tall .occupant-legs {
+        height: 7vw;
+      }
+
+      .occupant--short .occupant-shirt {
+        height: 12vw
+      }
+
+      .occupant--short .occupant-legs {
+        height: 5vw;
+      }
+
+      .button {
+        position: relative;
+        top: 0px;
+        border: none;
+        font-family: inherit;
+        font-weight: bold;
+        font-size: 3vw;
+        line-height: 2;
+        padding: 0px 2vw;
+        text-transform: uppercase;
+        border-radius: 2px;
+        text-align: center;
+        transition: 0.1s all linear;
+        cursor: pointer;
+        outline: none;
+      }
+
+      .urinal,
+      .slot {
+        width: 13vw;
+        height: 23vw;
+      }
+
+      .button:hover {
+        top: -3px;
+      }
+
+      .button-primary {
+        background-color: yellow;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.2), inset 0 1px 0px rgba(255,255,255,0.2);
+        text-shadow: 0 2px rgb(246, 255, 197);
+      }
+
+      .button-primary:hover {
+        background-color: #fdff5f;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        text-shadow: none;
+      }
+
+      .button-set .button {
+        margin: 1vw 1.5vw;
+      }
+
+      .info {
+        flex-direction: column;
+        background-color: rgba(255,255,255,0.75);
+      }
+
+      .info header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(255,255,255,0.75);
+        height: 7vw;
+        display: flex;
+        align-items: center;
+        padding: 0 3vw;
+        text-transform: uppercase;
+        font-size: 3vw;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+      }
+
+      .info header:hover {
+        background-color: #fff;
+      }
+
+      .info article {
+        padding: 7vw 3vw;
+        overflow: auto;
+      }
+
+      .info article h1,
+      .info article h2,
+      .info article p {
+        margin: 0;
+        padding: 0.5vw 0;
+      }
+
+      .info article h1 {
+        font-size: 5vw;
+        color: #123;
+      }
+
+      .info article h2 {
+        font-size: 3vw;
+        color: #333;
+      }
+
+      .info article p {
+        font-size: 2vw;
+        color: #555;
+      }
+
+      .info article a {
+        text-decoration: underline;
+        color: #345;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='root'></div>
+    <script src='elm.js'></script>
+    <script>
+      Elm.Main.init({ 
+        node: document.getElementById('root'),
+        flags: 0
+      })
+    </script>
+  </body>
+</html>
