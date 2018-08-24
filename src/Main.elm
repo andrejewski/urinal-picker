@@ -49,7 +49,7 @@ type Slot
 
 
 type alias Stage =
-    { slots : List Slot }
+    List Slot
 
 
 pantColors : Array String
@@ -149,14 +149,13 @@ stageGenerator count =
                     |> Array.fromList
                     |> Array.set emptyIndex Empty
                     |> Array.toList
-                    |> (\s -> { slots = s })
             )
 
 
 type alias Model =
     { screen : Screen
     , urinalCount : Int
-    , stage : Stage
+    , slots : Stage
     , start : Posix
     , finish : Posix
     , stageCount : Int
@@ -179,7 +178,7 @@ init : Int -> ( Model, Cmd Msg )
 init flags =
     ( { screen = Welcome
       , urinalCount = 7
-      , stage = { slots = [] }
+      , slots = []
       , start = Time.millisToPosix 0
       , finish = Time.millisToPosix 0
       , stageCount = 0
@@ -224,7 +223,7 @@ update msg model =
             ( { model | screen = Finish }, Task.perform FinishGame Time.now )
 
         StartStage stage ->
-            ( { model | stage = stage }, Cmd.none )
+            ( { model | slots = stage }, Cmd.none )
 
         StartGame start ->
             prepStage { model | start = start, stageCount = 0 }
@@ -510,7 +509,7 @@ stageView : Model -> Html Msg
 stageView model =
     let
         slotArray =
-            model.stage.slots
+            model.slots
                 |> Array.fromList
 
         slots =
