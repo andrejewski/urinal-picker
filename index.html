@@ -54,6 +54,7 @@
     .overlay-content {
       background-color: rgba(0, 0, 0, 0.7);
       flex: 1;
+      padding: 2vw 0;
     }
 
     .title {
@@ -253,24 +254,35 @@
       height: 23vw;
     }
 
-    .button:hover {
+    .hover .button:hover {
       top: -3px;
     }
 
     .button-primary {
       background-color: yellow;
+      color: #000;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0px rgba(255, 255, 255, 0.2);
-      text-shadow: 0 2px rgb(246, 255, 197);
+      text-shadow: 0 1px rgb(246, 255, 197);
     }
 
-    .button-primary:hover {
+    .hover .button-primary:hover {
       background-color: #fdff5f;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
       text-shadow: none;
     }
 
+    .button-secondary {
+      background-color: #ffffff;
+      color: #000;
+    }
+
+    .button-set {
+      margin: 0px;
+      padding-top: 1.5vw;
+    }
+
     .button-set .button {
-      margin: 1vw 1.5vw;
+      margin: 0vw 1.5vw;
     }
 
     .info {
@@ -295,7 +307,7 @@
       cursor: pointer;
     }
 
-    .info header:hover {
+    .hover .info header:hover {
       background-color: #fff;
     }
 
@@ -344,6 +356,11 @@
   <div id='root'></div>
   <script src='elm.js'></script>
   <script>
+    // HACK: Enable hover styles on non-touch devices
+    if (!('ontouchstart' in window)) {
+      document.body.className = 'hover'
+    }
+
     Elm.Main.init({
       node: document.getElementById('root'),
       flags: 0

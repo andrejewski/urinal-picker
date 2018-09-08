@@ -79,7 +79,6 @@ slotGenerator =
             (\i ->
                 if i == 0 then
                     emptyGenerator
-
                 else
                     occupantGenerator
                         |> Random.map Occupied
@@ -142,14 +141,14 @@ stageGenerator count =
                     (count - 1)
                 )
     in
-    group
-        |> Random.map
-            (\( slots, emptyIndex ) ->
-                slots
-                    |> Array.fromList
-                    |> Array.set emptyIndex Empty
-                    |> Array.toList
-            )
+        group
+            |> Random.map
+                (\( slots, emptyIndex ) ->
+                    slots
+                        |> Array.fromList
+                        |> Array.set emptyIndex Empty
+                        |> Array.toList
+                )
 
 
 type alias Model =
@@ -257,7 +256,7 @@ timeInSeconds start finish =
         seconds =
             duration // 1000
     in
-    String.fromInt seconds
+        String.fromInt seconds
 
 
 foreground : Model -> Html Msg
@@ -284,7 +283,6 @@ foreground model =
                 secondsUnit =
                     if seconds == "1" then
                         "second"
-
                     else
                         "seconds"
 
@@ -294,24 +292,23 @@ foreground model =
                 urinalsUnit =
                     if urinals == "1" then
                         "urinal"
-
                     else
                         "urinals"
             in
-            div [ class "overlay" ]
-                [ div
-                    [ class "overlay-content home" ]
-                    [ h1 [ class "score" ]
-                        [ text ("You correctly picked " ++ urinals ++ " " ++ urinalsUnit)
-                        , br [] []
-                        , text ("in " ++ seconds ++ " " ++ secondsUnit ++ ".")
-                        ]
-                    , p [ class "button-set" ]
-                        [ button [ class "button button-primary", onClick Retry ] [ text "Try again" ]
-                        , button [ class "button button-secondary", onClick ReturnHome ] [ text "Return home" ]
+                div [ class "overlay" ]
+                    [ div
+                        [ class "overlay-content home" ]
+                        [ h1 [ class "score" ]
+                            [ text ("You correctly picked " ++ urinals ++ " " ++ urinalsUnit)
+                            , br [] []
+                            , text ("in " ++ seconds ++ " " ++ secondsUnit ++ ".")
+                            ]
+                        , p [ class "button-set" ]
+                            [ button [ class "button button-primary", onClick Retry ] [ text "Try again" ]
+                            , button [ class "button button-secondary", onClick ReturnHome ] [ text "Return home" ]
+                            ]
                         ]
                     ]
-                ]
 
         Game ->
             stageView model
@@ -383,7 +380,6 @@ distanceFromLeftNudist allSlots index =
             (\slot ->
                 if isNudist slot then
                     Just 0
-
                 else
                     distanceFromLeftNudist allSlots (index - 1)
                         |> Maybe.map (\x -> x + 1)
@@ -397,7 +393,6 @@ distanceFromRightNudist allSlots index =
             (\slot ->
                 if isNudist slot then
                     Just 0
-
                 else
                     distanceFromRightNudist allSlots (index + 1)
                         |> Maybe.map (\x -> x + 1)
@@ -413,7 +408,6 @@ isFarthestFromNudists allSlots chosenSlot =
                     (\i slot ->
                         if isEmpty slot then
                             distanceFromNudist allSlots i
-
                         else
                             Just 0
                     )
@@ -424,7 +418,7 @@ isFarthestFromNudists allSlots chosenSlot =
         chosenDistance =
             distanceFromNudist allSlots chosenSlot
     in
-    chosenDistance == maximumDistance
+        chosenDistance == maximumDistance
 
 
 neighborHeight : Maybe Slot -> Int
@@ -461,7 +455,7 @@ adjacentHeight allSlots chosenSlot =
             Array.get (chosenSlot + 1) allSlots
                 |> neighborHeight
     in
-    left + right
+        left + right
 
 
 isAdjacentTheShortestOccupants : Array Slot -> Int -> Bool
@@ -476,7 +470,6 @@ isAdjacentTheShortestOccupants allSlots chosenSlot =
                     (\i slot ->
                         if isEmpty slot then
                             adjacentHeight allSlots i
-
                         else
                             maxHeight
                     )
@@ -485,7 +478,7 @@ isAdjacentTheShortestOccupants allSlots chosenSlot =
         chosenHeight =
             adjacentHeight allSlots chosenSlot
     in
-    chosenHeight == minimumHeight
+        chosenHeight == minimumHeight
 
 
 isOptimalSlot : Array Slot -> Int -> Bool
@@ -494,10 +487,8 @@ isOptimalSlot allSlots chosenIndex =
         Just slot ->
             if slot |> isEmpty |> not then
                 False
-
             else if allSlots |> Array.toList |> List.any isNudist then
                 isFarthestFromNudists allSlots chosenIndex
-
             else
                 isAdjacentTheShortestOccupants allSlots chosenIndex
 
@@ -520,7 +511,6 @@ stageView model =
                             action =
                                 if isOptimalSlot slotArray index then
                                     Win
-
                                 else
                                     Lose
 
@@ -532,19 +522,19 @@ stageView model =
                                     Occupied occupant ->
                                         div [ class "slot-occupied" ] [ occupantView occupant ]
                         in
-                        div
-                            [ class "slot"
-                            , onClick action
-                            ]
-                            [ entry ]
+                            div
+                                [ class "slot"
+                                , onClick action
+                                ]
+                                [ entry ]
                     )
     in
-    div []
-        [ div [ class "slots overlay" ]
-            (slots
-                |> Array.toList
-            )
-        ]
+        div []
+            [ div [ class "slots overlay" ]
+                (slots
+                    |> Array.toList
+                )
+            ]
 
 
 bg : String -> Html.Attribute Msg
@@ -571,36 +561,34 @@ occupantView occupant =
         shirtColor =
             if occupant.isNude then
                 occupant.skinColor
-
             else
                 occupant.shirtColor
 
         pantColor =
             if occupant.isNude then
                 occupant.skinColor
-
             else
                 occupant.pantColor
 
         kindClass =
             occupant.height |> heightToString |> (++) "occupant--"
     in
-    div [ class "occupant", class kindClass ]
-        [ div [ class "occupant-head", bg occupant.skinColor ]
-            [ div [ class "occupant-neck", bg occupant.skinColor ] [] ]
-        , div
-            [ class "occupant-shirt", bg shirtColor ]
-            []
-        , div [ class "occupant-waist", bg pantColor ] []
-        , div
-            [ class "occupant-legs" ]
-            [ div [ class "occupant-leg", bg pantColor ]
-                []
+        div [ class "occupant", class kindClass ]
+            [ div [ class "occupant-head", bg occupant.skinColor ]
+                [ div [ class "occupant-neck", bg occupant.skinColor ] [] ]
             , div
-                [ class "occupant-leg", bg pantColor ]
+                [ class "occupant-shirt", bg shirtColor ]
                 []
+            , div [ class "occupant-waist", bg pantColor ] []
+            , div
+                [ class "occupant-legs" ]
+                [ div [ class "occupant-leg", bg pantColor ]
+                    []
+                , div
+                    [ class "occupant-leg", bg pantColor ]
+                    []
+                ]
             ]
-        ]
 
 
 background : Model -> Html Msg
@@ -619,19 +607,18 @@ background model =
                             ]
                     )
     in
-    div [ class "background" ]
-        [ div [ class "bathroom-scene" ]
-            [ div [ class "bathroom-wall" ] []
-            , div [ class "urinal-row" ] urinals
-            , div [ class "bathroom-floor" ]
-                (if model.screen == Game then
-                    [ text "Urinal Picker" ]
-
-                 else
-                    []
-                )
+        div [ class "background" ]
+            [ div [ class "bathroom-scene" ]
+                [ div [ class "bathroom-wall" ] []
+                , div [ class "urinal-row" ] urinals
+                , div [ class "bathroom-floor" ]
+                    (if model.screen == Game then
+                        [ text "Urinal Picker" ]
+                     else
+                        []
+                    )
+                ]
             ]
-        ]
 
 
 infoView : Html Msg
