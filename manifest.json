@@ -1,0 +1,20 @@
+{
+  "name": "Urinal Picker",
+  "short_name": "Urinal Picker",
+  "start_url": "/urinal-picker/?utm_source=a2hs",
+  "background_color": "#a6c9e7",
+  "display": "fullscreen",
+  "scope": "/urinal-picker/",
+  "icons": [
+    {
+      "src": "icons/medium.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/large.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
